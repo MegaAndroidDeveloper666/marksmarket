@@ -1,0 +1,39 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="android:windowActivityTransitions">true</item>
+        <item name="titleTextColor">@color/text_contrast</item>
+        <item name="subtitleTextColor">@color/text_contrast</item>
+        <item name="android:colorButtonNormal">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:buttonStyle">@style/ButtonColor</item>
+    </style>
+
+    <style name="AppTheme.Splash" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="ButtonColor" parent="@android:style/Widget.Button">
+        <item name="android:textColor">@color/text_contrast</item>
+    </style>
+
+    <style name="MyActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:textColorPrimary">@color/text_contrast</item>
+        <item name="android:textColorSecondary">@color/text_contrast</item>
+        <item name="actionMenuTextColor">@color/text_contrast</item>
+    </style>
+
+    <style name="DialogTheme" parent="Base.Theme.AppCompat.Dialog">
+
+    </style>
+
+
+</resources>

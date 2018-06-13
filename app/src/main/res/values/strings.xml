@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Marks Market</string>
+    <string name="app_name_normal">Marks Market</string>
+    <string name="available">In stock:</string>
+    <string name="available_device_info_screen">In stock</string>
+    <string name="price">Price</string>
+    <string name="mode_buy">Buy</string>
+    <string name="mode_edit">Edit</string>
+    <string name="mode_edit_action_button">Save</string>
+    <string name="store_front">Store-Front</string>
+    <string name="action_delete">Delete</string>
+
+</resources>
