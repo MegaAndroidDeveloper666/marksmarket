@@ -2,8 +2,4 @@ package ru.markstudio.marksmarket.data
 
 import java.math.BigDecimal
 
-data class Device (var name: String, var price: BigDecimal, var count: Int, val id: Int) {
-    fun buy() {
-        count = count - 1
-    }
-}
+data class Device (var name: String, var price: BigDecimal, var count: Int, val id: Int)

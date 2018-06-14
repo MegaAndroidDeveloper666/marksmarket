@@ -1,5 +1,7 @@
 package ru.markstudio.marksmarket.data
 
+import android.os.Handler
+import io.reactivex.subjects.PublishSubject
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -12,20 +14,34 @@ class DataHolder private constructor() {
 
     companion object {
         val instance: DataHolder by lazy { Holder.INSTANCE }
+        private val BUY_TIME = 3000L
+        private val EDIT_TIME = 5000L
     }
 
     private lateinit var privateDeviceList: ArrayList<Device>
     lateinit var currentMode: AppMode
+    val buySubject = PublishSubject.create<Boolean>()
+    val editSubject = PublishSubject.create<Boolean>()
+    val addSubject = PublishSubject.create<Unit>()
+    val deleteSubject = PublishSubject.create<Boolean>()
 
     fun getDeviceList(): ArrayList<Device> {
         if (currentMode == AppMode.BUY) {
             return privateDeviceList.filter {
                 it.count > 0
             } as ArrayList<Device>
-        }else{
+        } else {
             return privateDeviceList
         }
     }
+
+    private fun getDeviceById(id: Int): Device? {
+        return privateDeviceList.find { device -> device.id == id }
+    }
+
+    fun readFromJSON() {}
+
+    fun loadFromWeb() {}
 
     fun readFromCSV(inputStream: InputStream) {
         privateDeviceList = ArrayList()
@@ -53,24 +69,62 @@ class DataHolder private constructor() {
         return resultList
     }
 
-    fun readFromJSON() {}
-
-    fun loadFromWeb() {}
+    fun buyDevice(id: Int) {
+        handleAction(BUY_TIME) { handleBuyAction(id) }
+    }
 
     fun addDevice(name: String, price: BigDecimal, count: Int) {
-        privateDeviceList.add(Device(name, price, count, privateDeviceList[privateDeviceList.size - 1].id + 1))
+        handleAction(5000) { handleAddAction(name, price, count) }
     }
 
-    fun editDevice(itemPosition: Int, name: String, price: BigDecimal, count: Int) {
-        getDeviceList()[itemPosition].run {
-            this.name = name
-            this.price = price
-            this.count = count
+    fun editDevice(id: Int, name: String, price: BigDecimal, count: Int) {
+        handleAction(5000) { handleEditAction(id, name, price, count) }
+    }
+
+    fun deleteDevice(id: Int) {
+        handleAction(5000) { handleDeleteAction(id) }
+    }
+
+    private fun handleAction(time: Long, function: () -> Unit) {
+        Handler().postDelayed(function, time)
+    }
+
+    private fun handleBuyAction(id: Int) {
+        val success = getDeviceById(id)?.let {
+            if (it.count > 0) {
+                it.count--
+                true
+            } else {
+                false
+            }
+        } ?: false
+        buySubject.onNext(success)
+    }
+
+    private fun handleAddAction(name: String, price: BigDecimal, count: Int) {
+        privateDeviceList.add(Device(name, price, count, privateDeviceList.last().id + 1))
+        addSubject.onNext(Unit)
+    }
+
+    private fun handleEditAction(id: Int, name: String, price: BigDecimal, count: Int) {
+        val success = getDeviceById(id)?.let {
+            it.name = name
+            it.price = price
+            it.count = count
+            true
+        } ?: run {
+            false
         }
-
+        editSubject.onNext(success)
     }
 
-    fun deleteDevice(itemPosition: Int) {
-        privateDeviceList.removeAt(itemPosition)
+    private fun handleDeleteAction(id: Int) {
+        val success = getDeviceById(id)?.let {
+            privateDeviceList.removeAll { device -> device.id == id }
+            true
+        } ?: run {
+            false
+        }
+        deleteSubject.onNext(success)
     }
 }

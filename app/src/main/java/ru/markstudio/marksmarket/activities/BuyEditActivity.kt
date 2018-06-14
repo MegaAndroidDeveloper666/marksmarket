@@ -15,9 +15,15 @@ class BuyEditActivity : AppCompatActivity() {
 
     companion object {
         val ITEM_POSITION = "ItemPosition"
+//        private val buySubject = BehaviorSubject.create<Int>()
+//        @JvmStatic
+//        fun getObservable(): BehaviorSubject<Int> {
+//            return buySubject
+//        }
     }
 
     var itemPosition: Int = -1
+    var id: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +43,7 @@ class BuyEditActivity : AppCompatActivity() {
             devicePriceTextView.setText("${device.price.setScale(2, RoundingMode.HALF_UP)}")
             deviceAvailabilityTextView.setText("${device.count}")
             deviceImage.setImageResource(R.drawable.placeholder_big)
+            id = device.id
         } else { //Новая штука
             deviceDescriptionTextView.setText("")
             devicePriceTextView.setText("")
@@ -68,13 +75,13 @@ class BuyEditActivity : AppCompatActivity() {
                     )
                 } else {
                     DataHolder.instance.editDevice(
-                            itemPosition,
+                            id,
                             deviceDescriptionTextView.text.toString(),
                             devicePriceTextView.text.toString().toBigDecimal(),
                             deviceAvailabilityTextView.text.toString().toInt())
                 }
             } else {
-                DataHolder.instance.getDeviceList()[itemPosition].buy()
+                DataHolder.instance.buyDevice(id)
             }
             finish()
         }
@@ -97,13 +104,13 @@ class BuyEditActivity : AppCompatActivity() {
                         "Да",
                         { _, _ ->
                             run {
-                                DataHolder.instance.deleteDevice(itemPosition)
+                                DataHolder.instance.deleteDevice(id)
                                 finish()
                             }
                         })
                 setNegativeButton(
                         "Нет",
-                        {_, _ -> })
+                        { _, _ -> })
             }.show()
         }
         return super.onOptionsItemSelected(item)

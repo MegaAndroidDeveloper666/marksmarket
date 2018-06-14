@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.widget.Switch
+import android.widget.Toast
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_goods_list.*
 import ru.markstudio.marksmarket.R
 import ru.markstudio.marksmarket.data.AppMode
@@ -13,6 +15,8 @@ import ru.markstudio.marksmarket.data.DataHolder
 import ru.markstudio.marksmarket.view.DeviceListAdapter
 
 class GoodsListActivity : AppCompatActivity() {
+
+    lateinit var compositeDisposable: CompositeDisposable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +71,41 @@ class GoodsListActivity : AppCompatActivity() {
 
     override fun onResume() {
         goodsRecyclerView.adapter?.notifyDataSetChanged()
+        compositeDisposable = CompositeDisposable(
+                DataHolder.instance.buySubject.subscribe({ buySuccess -> onBuyFinishEvent(buySuccess) }),
+                DataHolder.instance.addSubject.subscribe({ _ -> onAddFinishEvent() }),
+                DataHolder.instance.deleteSubject.subscribe({ deleteSuccess -> onDeleteFinishEvent(deleteSuccess) })
+        )
+        DataHolder.instance.editSubject.subscribe({ editSuccess -> onEditFinishEvent(editSuccess) })
         super.onResume()
+    }
+
+    override fun onPause() {
+        compositeDisposable.dispose()
+        super.onPause()
+    }
+
+    fun onBuyFinishEvent(success: Boolean) {
+        consumeEvent(success, "Устройство успешно куплено!", "Устройство не куплено, попробуйте еще раз")
+    }
+
+    fun onAddFinishEvent() {
+        consumeEvent(true, "Устройство успешно добавлено", "")
+    }
+
+    fun onDeleteFinishEvent(success: Boolean) {
+        consumeEvent(success, "Устройство успешно удалено", "Ошибка, попробуйте еще раз")
+    }
+
+    fun onEditFinishEvent(success: Boolean) {
+        consumeEvent(success, "Устройство успешно изменено", "Ошибка изменения, попробуйте еще раз")
+    }
+
+    fun consumeEvent(success: Boolean, successStr: String, unsuccessStr: String) {
+        Toast.makeText(
+                applicationContext,
+                if (success) successStr else unsuccessStr,
+                Toast.LENGTH_SHORT).show()
+        goodsRecyclerView.adapter?.notifyDataSetChanged()
     }
 }
