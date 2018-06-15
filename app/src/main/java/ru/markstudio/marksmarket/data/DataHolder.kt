@@ -74,15 +74,15 @@ class DataHolder private constructor() {
     }
 
     fun addDevice(name: String, price: BigDecimal, count: Int) {
-        handleAction(5000) { handleAddAction(name, price, count) }
+        handleAction(EDIT_TIME) { handleAddAction(name, price, count) }
     }
 
     fun editDevice(id: Int, name: String, price: BigDecimal, count: Int) {
-        handleAction(5000) { handleEditAction(id, name, price, count) }
+        handleAction(EDIT_TIME) { handleEditAction(id, name, price, count) }
     }
 
     fun deleteDevice(id: Int) {
-        handleAction(5000) { handleDeleteAction(id) }
+        handleAction(EDIT_TIME) { handleDeleteAction(id) }
     }
 
     private fun handleAction(time: Long, function: () -> Unit) {
