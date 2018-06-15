@@ -1,7 +1,7 @@
 package ru.markstudio.marksmarket
 
 import android.app.Application
-import ru.markstudio.marksmarket.model.DeviceRepository
+import ru.markstudio.marksmarket.model.data.DeviceRepository
 import ru.markstudio.marksmarket.viewmodel.DeviceListViewModel
 
 class MarketApp : Application() {

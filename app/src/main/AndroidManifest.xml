@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activities.SplashScreenActivity"
+            android:name="ru.markstudio.marksmarket.view.activities.SplashScreenActivity"
             android:theme="@style/AppTheme.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,8 +19,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.GoodsListActivity" />
-        <activity android:name=".activities.BuyEditActivity"
+        <activity android:name="ru.markstudio.marksmarket.view.activities.GoodsListActivity" />
+        <activity android:name="ru.markstudio.marksmarket.view.activities.BuyEditActivity"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
     </application>
 

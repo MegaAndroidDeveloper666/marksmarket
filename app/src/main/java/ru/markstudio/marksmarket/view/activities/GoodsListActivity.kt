@@ -1,4 +1,4 @@
-package ru.markstudio.marksmarket.activities
+package ru.markstudio.marksmarket.view.activities
 
 import android.arch.lifecycle.Observer
 import android.content.Intent
@@ -11,8 +11,8 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_goods_list.*
 import ru.markstudio.marksmarket.MarketApp
 import ru.markstudio.marksmarket.R
-import ru.markstudio.marksmarket.data.AppMode
-import ru.markstudio.marksmarket.data.UpdateEvent
+import ru.markstudio.marksmarket.model.AppMode
+import ru.markstudio.marksmarket.model.UpdateEvent
 import ru.markstudio.marksmarket.view.DeviceListAdapter
 import ru.markstudio.marksmarket.viewmodel.DeviceListViewModel
 
@@ -31,7 +31,7 @@ class GoodsListActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
             adapter = DeviceListAdapter(
                     applicationContext,
-                    deviceListViewModel.getDeviceList(),
+                    deviceListViewModel,
                     { position -> openDeviceInfoActivity(position) }
             )
         }

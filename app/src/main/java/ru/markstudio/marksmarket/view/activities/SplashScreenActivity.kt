@@ -1,4 +1,4 @@
-package ru.markstudio.marksmarket.activities
+package ru.markstudio.marksmarket.view.activities
 
 import android.content.Intent
 import android.os.Bundle

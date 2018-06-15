@@ -1,4 +1,4 @@
-package ru.markstudio.marksmarket.activities
+package ru.markstudio.marksmarket.view.activities
 
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
@@ -8,9 +8,8 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_buy_edit.*
 import ru.markstudio.marksmarket.MarketApp
 import ru.markstudio.marksmarket.R
-import ru.markstudio.marksmarket.data.AppMode
-import ru.markstudio.marksmarket.data.DataHolder
-import ru.markstudio.marksmarket.model.Device
+import ru.markstudio.marksmarket.model.AppMode
+import ru.markstudio.marksmarket.model.data.Device
 import ru.markstudio.marksmarket.viewmodel.DeviceListViewModel
 import java.math.RoundingMode
 
@@ -73,7 +72,7 @@ class BuyEditActivity : AppCompatActivity() {
                             deviceAvailabilityTextView.text.toString().toInt()
                     )
                 } else {
-                    DataHolder.instance.editDevice(
+                    deviceListViewModel.editDevice(
                             device.id,
                             deviceDescriptionTextView.text.toString(),
                             devicePriceTextView.text.toString().toBigDecimal(),
@@ -103,7 +102,7 @@ class BuyEditActivity : AppCompatActivity() {
                         "Да",
                         { _, _ ->
                             run {
-                                DataHolder.instance.deleteDevice(device.id)
+                                deviceListViewModel.deleteDevice(device.id)
                                 finish()
                             }
                         })

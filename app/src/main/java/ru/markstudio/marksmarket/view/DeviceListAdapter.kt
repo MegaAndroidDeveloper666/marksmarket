@@ -7,11 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.device_list_item.view.*
 import ru.markstudio.marksmarket.R
-import ru.markstudio.marksmarket.model.Device
+import ru.markstudio.marksmarket.viewmodel.DeviceListViewModel
 
 class DeviceListAdapter(
         val context: Context,
-        private val data: ArrayList<Device>,
+        private val viewModel: DeviceListViewModel,
         private val onItemClickListener: (Int) -> (Unit)
 ) : RecyclerView.Adapter<DeviceListAdapter.ViewHolder>() {
 
@@ -20,7 +20,7 @@ class DeviceListAdapter(
     }
 
     override fun getItemCount(): Int {
-        return data.size
+        return viewModel.getDeviceList().size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -30,7 +30,7 @@ class DeviceListAdapter(
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(position: Int) {
-            val device = data[position]
+            val device = viewModel.getDeviceList()[position]
             itemView.deviceNameTextView.text = device.name
             itemView.countTextView.text = "${device.count}"
             itemView.deviceImage.setImageResource(R.drawable.placeholder)

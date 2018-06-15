@@ -1,10 +1,10 @@
 package ru.markstudio.marksmarket.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
-import ru.markstudio.marksmarket.data.AppMode
-import ru.markstudio.marksmarket.data.UpdateEvent
-import ru.markstudio.marksmarket.model.Device
-import ru.markstudio.marksmarket.model.DeviceRepository
+import ru.markstudio.marksmarket.model.AppMode
+import ru.markstudio.marksmarket.model.UpdateEvent
+import ru.markstudio.marksmarket.model.data.Device
+import ru.markstudio.marksmarket.model.data.DeviceRepository
 import java.math.BigDecimal
 
 class DeviceListViewModel(private val deviceRepository: DeviceRepository) {
@@ -25,13 +25,19 @@ class DeviceListViewModel(private val deviceRepository: DeviceRepository) {
             else
                 deviceRepository.privateDeviceList
 
-    fun getDeviceById(id: Int) = deviceRepository.getDeviceById(id)
-
     fun buyDevice(id: Int) {
         deviceRepository.buyDevice(id)
     }
 
     fun addDevice(name: String, price: BigDecimal, count: Int) {
         deviceRepository.addDevice(name, price, count)
+    }
+
+    fun editDevice(id: Int, name: String, price: BigDecimal, count: Int) {
+        deviceRepository.editDevice(id, name, price, count)
+    }
+
+    fun deleteDevice(id: Int) {
+        deviceRepository.deleteDevice(id)
     }
 }
