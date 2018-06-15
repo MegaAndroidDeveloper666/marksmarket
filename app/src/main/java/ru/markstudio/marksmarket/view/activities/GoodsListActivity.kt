@@ -85,24 +85,4 @@ class GoodsListActivity : AppCompatActivity() {
             goodsRecyclerView.adapter?.notifyDataSetChanged()
         }
     }
-
-    fun onAddFinishEvent() {
-        consumeEvent(true, "Устройство успешно добавлено", "")
-    }
-
-    fun onDeleteFinishEvent(success: Boolean) {
-        consumeEvent(success, "Устройство успешно удалено", "Ошибка, попробуйте еще раз")
-    }
-
-    fun onEditFinishEvent(success: Boolean) {
-        consumeEvent(success, "Устройство успешно изменено", "Ошибка изменения, попробуйте еще раз")
-    }
-
-    fun consumeEvent(success: Boolean, successStr: String, unsuccessStr: String) {
-        Toast.makeText(
-                applicationContext,
-                if (success) successStr else unsuccessStr,
-                Toast.LENGTH_SHORT).show()
-        goodsRecyclerView.adapter?.notifyDataSetChanged()
-    }
 }
