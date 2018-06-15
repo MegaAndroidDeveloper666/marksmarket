@@ -3,8 +3,10 @@ package ru.markstudio.marksmarket.activities
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.text.TextUtils
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_buy_edit.*
 import ru.markstudio.marksmarket.R
 import ru.markstudio.marksmarket.data.AppMode
@@ -29,14 +31,18 @@ class BuyEditActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_buy_edit)
 
+        itemPosition = intent.getIntExtra(ITEM_POSITION, -1)
+
         setSupportActionBar(toolbar)
-        supportActionBar?.title = getString(DataHolder.instance.currentMode.titleDetailsId)
+        supportActionBar?.title = if (itemPosition != -1)
+            getString(DataHolder.instance.currentMode.titleDetailsId)
+        else
+            getString(R.string.mode_add)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
         toolbar.setNavigationOnClickListener { onBackPressed() }
 
-        itemPosition = intent.getIntExtra(ITEM_POSITION, -1)
         if (itemPosition != -1) {
             val device = DataHolder.instance.getDeviceList()[itemPosition]
             deviceDescriptionTextView.setText(device.name)
@@ -67,18 +73,25 @@ class BuyEditActivity : AppCompatActivity() {
 
         actionButton.setOnClickListener {
             if (DataHolder.instance.currentMode == AppMode.EDIT) {
-                if (itemPosition == -1) {
-                    DataHolder.instance.addDevice(
-                            deviceDescriptionTextView.text.toString(),
-                            devicePriceTextView.text.toString().toBigDecimal(),
-                            deviceAvailabilityTextView.text.toString().toInt()
-                    )
+                if (TextUtils.isEmpty(deviceDescriptionTextView.text.toString()) ||
+                        TextUtils.isEmpty(devicePriceTextView.text.toString()) ||
+                        TextUtils.isEmpty(deviceAvailabilityTextView.text.toString())) {
+                    Toast.makeText(applicationContext, "Заполните все поля!", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
                 } else {
-                    DataHolder.instance.editDevice(
-                            id,
-                            deviceDescriptionTextView.text.toString(),
-                            devicePriceTextView.text.toString().toBigDecimal(),
-                            deviceAvailabilityTextView.text.toString().toInt())
+                    if (itemPosition == -1) {
+                        DataHolder.instance.addDevice(
+                                deviceDescriptionTextView.text.toString(),
+                                devicePriceTextView.text.toString().toBigDecimal(),
+                                deviceAvailabilityTextView.text.toString().toInt()
+                        )
+                    } else {
+                        DataHolder.instance.editDevice(
+                                id,
+                                deviceDescriptionTextView.text.toString(),
+                                devicePriceTextView.text.toString().toBigDecimal(),
+                                deviceAvailabilityTextView.text.toString().toInt())
+                    }
                 }
             } else {
                 DataHolder.instance.buyDevice(id)
