@@ -1,4 +1,4 @@
-package ru.markstudio.marksmarket.data
+package ru.markstudio.marksmarket.model
 
 import java.math.BigDecimal
 

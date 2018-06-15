@@ -2,6 +2,7 @@ package ru.markstudio.marksmarket.data
 
 import android.os.Handler
 import io.reactivex.subjects.PublishSubject
+import ru.markstudio.marksmarket.model.Device
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader

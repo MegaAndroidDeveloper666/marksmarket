@@ -9,14 +9,17 @@ import android.widget.Switch
 import android.widget.Toast
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_goods_list.*
+import ru.markstudio.marksmarket.MarketApp
 import ru.markstudio.marksmarket.R
 import ru.markstudio.marksmarket.data.AppMode
 import ru.markstudio.marksmarket.data.DataHolder
 import ru.markstudio.marksmarket.view.DeviceListAdapter
+import ru.markstudio.marksmarket.viewmodel.DeviceListViewModel
 
 class GoodsListActivity : AppCompatActivity() {
 
     lateinit var compositeDisposable: CompositeDisposable
+    val deviceListViewModel: DeviceListViewModel by lazy { (application as MarketApp).deviceListViewModel }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,9 +30,11 @@ class GoodsListActivity : AppCompatActivity() {
 
         goodsRecyclerView.apply {
             layoutManager = LinearLayoutManager(applicationContext, LinearLayoutManager.VERTICAL, false)
-            adapter = DeviceListAdapter(applicationContext).apply {
-                onItemClickListener = { position -> openDeviceInfoActivity(position) }
-            }
+            adapter = DeviceListAdapter(
+                    applicationContext,
+                    deviceListViewModel.getDeviceList(),
+                    { position -> openDeviceInfoActivity(position) }
+            )
         }
 
         fabAdd.setOnClickListener { openDeviceInfoActivity(-1) }
@@ -37,7 +42,7 @@ class GoodsListActivity : AppCompatActivity() {
     }
 
     private fun initFabVisibility() {
-        if (DataHolder.instance.currentMode == AppMode.EDIT) {
+        if (deviceListViewModel.currentMode == AppMode.EDIT) {
             fabAdd.show()
         } else {
             fabAdd.hide()
@@ -51,7 +56,7 @@ class GoodsListActivity : AppCompatActivity() {
                     { _, checked ->
                         val mode = if (checked) AppMode.EDIT else AppMode.BUY
                         mode.run {
-                            DataHolder.instance.currentMode = this
+                            deviceListViewModel.currentMode = this
                             it.text = getString(this.titleSwitchId)
                         }
                         goodsRecyclerView.adapter?.notifyDataSetChanged()
@@ -74,9 +79,9 @@ class GoodsListActivity : AppCompatActivity() {
         compositeDisposable = CompositeDisposable(
                 DataHolder.instance.buySubject.subscribe({ buySuccess -> onBuyFinishEvent(buySuccess) }),
                 DataHolder.instance.addSubject.subscribe({ _ -> onAddFinishEvent() }),
-                DataHolder.instance.deleteSubject.subscribe({ deleteSuccess -> onDeleteFinishEvent(deleteSuccess) })
+                DataHolder.instance.deleteSubject.subscribe({ deleteSuccess -> onDeleteFinishEvent(deleteSuccess) }),
+                DataHolder.instance.editSubject.subscribe({ editSuccess -> onEditFinishEvent(editSuccess) })
         )
-        DataHolder.instance.editSubject.subscribe({ editSuccess -> onEditFinishEvent(editSuccess) })
         super.onResume()
     }
 

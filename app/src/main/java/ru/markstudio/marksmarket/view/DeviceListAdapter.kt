@@ -7,18 +7,20 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.device_list_item.view.*
 import ru.markstudio.marksmarket.R
-import ru.markstudio.marksmarket.data.DataHolder
+import ru.markstudio.marksmarket.model.Device
 
-class DeviceListAdapter(val context: Context) : RecyclerView.Adapter<DeviceListAdapter.ViewHolder>() {
-
-    lateinit var onItemClickListener: (Int) -> (Unit)
+class DeviceListAdapter(
+        val context: Context,
+        private val data: ArrayList<Device>,
+        private val onItemClickListener: (Int) -> (Unit)
+) : RecyclerView.Adapter<DeviceListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(context).inflate(R.layout.device_list_item, parent, false))
     }
 
     override fun getItemCount(): Int {
-        return DataHolder.instance.getDeviceList().size
+        return data.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -28,7 +30,7 @@ class DeviceListAdapter(val context: Context) : RecyclerView.Adapter<DeviceListA
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(position: Int) {
-            val device = DataHolder.instance.getDeviceList()[position]
+            val device = data[position]
             itemView.deviceNameTextView.text = device.name
             itemView.countTextView.text = "${device.count}"
             itemView.deviceImage.setImageResource(R.drawable.placeholder)
