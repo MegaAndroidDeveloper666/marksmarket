@@ -5,6 +5,7 @@
     <string name="price">Цена</string>
     <string name="mode_buy">Купить</string>
     <string name="mode_edit">Изменить</string>
+    <string name="mode_add">Добавить</string>
     <string name="mode_edit_action_button">Сохранить</string>
     <string name="store_front">Store-Front</string>
     <string name="back_end">Back-End</string>
