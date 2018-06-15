@@ -74,9 +74,9 @@ class GoodsListActivity : AppCompatActivity() {
         compositeDisposable = CompositeDisposable(
                 DataHolder.instance.buySubject.subscribe({ buySuccess -> onBuyFinishEvent(buySuccess) }),
                 DataHolder.instance.addSubject.subscribe({ _ -> onAddFinishEvent() }),
-                DataHolder.instance.deleteSubject.subscribe({ deleteSuccess -> onDeleteFinishEvent(deleteSuccess) })
+                DataHolder.instance.deleteSubject.subscribe({ deleteSuccess -> onDeleteFinishEvent(deleteSuccess) }),
+                DataHolder.instance.editSubject.subscribe({ editSuccess -> onEditFinishEvent(editSuccess) })
         )
-        DataHolder.instance.editSubject.subscribe({ editSuccess -> onEditFinishEvent(editSuccess) })
         super.onResume()
     }
 
