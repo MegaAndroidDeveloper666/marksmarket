@@ -6,31 +6,31 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_buy_edit.*
+import ru.markstudio.marksmarket.MarketApp
 import ru.markstudio.marksmarket.R
 import ru.markstudio.marksmarket.data.AppMode
 import ru.markstudio.marksmarket.data.DataHolder
+import ru.markstudio.marksmarket.model.Device
+import ru.markstudio.marksmarket.viewmodel.DeviceListViewModel
 import java.math.RoundingMode
 
 class BuyEditActivity : AppCompatActivity() {
 
+    val deviceListViewModel: DeviceListViewModel by lazy { (application as MarketApp).deviceListViewModel }
+    lateinit var device: Device
+
     companion object {
         val ITEM_POSITION = "ItemPosition"
-//        private val buySubject = BehaviorSubject.create<Int>()
-//        @JvmStatic
-//        fun getObservable(): BehaviorSubject<Int> {
-//            return buySubject
-//        }
     }
 
     var itemPosition: Int = -1
-    var id: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_buy_edit)
 
         setSupportActionBar(toolbar)
-        supportActionBar?.title = getString(DataHolder.instance.currentMode.titleDetailsId)
+        supportActionBar?.title = getString(deviceListViewModel.currentMode.titleDetailsId)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
@@ -38,12 +38,11 @@ class BuyEditActivity : AppCompatActivity() {
 
         itemPosition = intent.getIntExtra(ITEM_POSITION, -1)
         if (itemPosition != -1) {
-            val device = DataHolder.instance.getDeviceList()[itemPosition]
+            device = deviceListViewModel.getDeviceList()[itemPosition]
             deviceDescriptionTextView.setText(device.name)
             devicePriceTextView.setText("${device.price.setScale(2, RoundingMode.HALF_UP)}")
             deviceAvailabilityTextView.setText("${device.count}")
             deviceImage.setImageResource(R.drawable.placeholder_big)
-            id = device.id
         } else { //Новая штука
             deviceDescriptionTextView.setText("")
             devicePriceTextView.setText("")
@@ -51,7 +50,7 @@ class BuyEditActivity : AppCompatActivity() {
             deviceImage.setImageResource(R.drawable.placeholder_big)
         }
 
-        DataHolder.instance.currentMode.run {
+        deviceListViewModel.currentMode.run {
             actionButton.text = getString(this.buttonDetailsTextId)
             val isEditable = this == AppMode.EDIT
             deviceDescriptionTextView.isEnabled = isEditable
@@ -66,29 +65,29 @@ class BuyEditActivity : AppCompatActivity() {
         }
 
         actionButton.setOnClickListener {
-            if (DataHolder.instance.currentMode == AppMode.EDIT) {
+            if (deviceListViewModel.currentMode == AppMode.EDIT) {
                 if (itemPosition == -1) {
-                    DataHolder.instance.addDevice(
+                    deviceListViewModel.addDevice(
                             deviceDescriptionTextView.text.toString(),
                             devicePriceTextView.text.toString().toBigDecimal(),
                             deviceAvailabilityTextView.text.toString().toInt()
                     )
                 } else {
                     DataHolder.instance.editDevice(
-                            id,
+                            device.id,
                             deviceDescriptionTextView.text.toString(),
                             devicePriceTextView.text.toString().toBigDecimal(),
                             deviceAvailabilityTextView.text.toString().toInt())
                 }
             } else {
-                DataHolder.instance.buyDevice(id)
+                deviceListViewModel.buyDevice(device.id)
             }
             finish()
         }
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        if (DataHolder.instance.currentMode == AppMode.EDIT && itemPosition != -1) {
+        if (deviceListViewModel.currentMode == AppMode.EDIT && itemPosition != -1) {
             menuInflater.inflate(R.menu.edit_menu, menu)
             return true
         } else {
@@ -104,7 +103,7 @@ class BuyEditActivity : AppCompatActivity() {
                         "Да",
                         { _, _ ->
                             run {
-                                DataHolder.instance.deleteDevice(id)
+                                DataHolder.instance.deleteDevice(device.id)
                                 finish()
                             }
                         })

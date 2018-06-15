@@ -6,8 +6,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Window
 import android.view.WindowManager
 import ru.markstudio.marksmarket.R
-import ru.markstudio.marksmarket.data.AppMode
-import ru.markstudio.marksmarket.data.DataHolder
 import java.util.*
 import kotlin.concurrent.schedule
 
@@ -23,16 +21,16 @@ class SplashScreenActivity : AppCompatActivity() {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.activity_splash_screen)
-        initData()
+//        initData()
         Timer(SPLASH_TAG, false).schedule(SPLASH_DELAY) {
             startMainActivity()
         }
     }
 
-    private fun initData() {
-        DataHolder.instance.readFromCSV(resources.openRawResource(R.raw.data))
-        DataHolder.instance.currentMode = AppMode.BUY
-    }
+//    private fun initData() {
+//        DataHolder.instance.readFromCSV(resources.openRawResource(R.raw.data))
+//        DataHolder.instance.currentMode = AppMode.BUY
+//    }
 
     private fun startMainActivity() {
         startActivity(Intent(applicationContext, GoodsListActivity::class.java))

@@ -20,7 +20,7 @@ class DataHolder private constructor() {
     }
 
     private lateinit var privateDeviceList: ArrayList<Device>
-    lateinit var currentMode: AppMode
+    var currentMode: AppMode = AppMode.BUY
     val buySubject = PublishSubject.create<Boolean>()
     val editSubject = PublishSubject.create<Boolean>()
     val addSubject = PublishSubject.create<Unit>()

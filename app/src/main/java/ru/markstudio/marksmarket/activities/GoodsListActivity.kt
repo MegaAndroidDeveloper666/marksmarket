@@ -1,5 +1,6 @@
 package ru.markstudio.marksmarket.activities
 
+import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -7,18 +8,16 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.widget.Switch
 import android.widget.Toast
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.activity_goods_list.*
 import ru.markstudio.marksmarket.MarketApp
 import ru.markstudio.marksmarket.R
 import ru.markstudio.marksmarket.data.AppMode
-import ru.markstudio.marksmarket.data.DataHolder
+import ru.markstudio.marksmarket.data.UpdateEvent
 import ru.markstudio.marksmarket.view.DeviceListAdapter
 import ru.markstudio.marksmarket.viewmodel.DeviceListViewModel
 
 class GoodsListActivity : AppCompatActivity() {
 
-    lateinit var compositeDisposable: CompositeDisposable
     val deviceListViewModel: DeviceListViewModel by lazy { (application as MarketApp).deviceListViewModel }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,6 +38,7 @@ class GoodsListActivity : AppCompatActivity() {
 
         fabAdd.setOnClickListener { openDeviceInfoActivity(-1) }
         initFabVisibility()
+        deviceListViewModel.modelUpdateMutableLiveData.observe(this, Observer{event -> handleEvent(event)})
     }
 
     private fun initFabVisibility() {
@@ -62,7 +62,7 @@ class GoodsListActivity : AppCompatActivity() {
                         goodsRecyclerView.adapter?.notifyDataSetChanged()
                         initFabVisibility()
                     })
-            it.text = getString(DataHolder.instance.currentMode.titleSwitchId)
+            it.text = getString(deviceListViewModel.currentMode.titleSwitchId)
         }
         return true
     }
@@ -76,22 +76,14 @@ class GoodsListActivity : AppCompatActivity() {
 
     override fun onResume() {
         goodsRecyclerView.adapter?.notifyDataSetChanged()
-        compositeDisposable = CompositeDisposable(
-                DataHolder.instance.buySubject.subscribe({ buySuccess -> onBuyFinishEvent(buySuccess) }),
-                DataHolder.instance.addSubject.subscribe({ _ -> onAddFinishEvent() }),
-                DataHolder.instance.deleteSubject.subscribe({ deleteSuccess -> onDeleteFinishEvent(deleteSuccess) }),
-                DataHolder.instance.editSubject.subscribe({ editSuccess -> onEditFinishEvent(editSuccess) })
-        )
         super.onResume()
     }
 
-    override fun onPause() {
-        compositeDisposable.dispose()
-        super.onPause()
-    }
-
-    fun onBuyFinishEvent(success: Boolean) {
-        consumeEvent(success, "Устройство успешно куплено!", "Устройство не куплено, попробуйте еще раз")
+    private fun handleEvent(updateEvent: UpdateEvent?) {
+        Toast.makeText(applicationContext, updateEvent?.message, Toast.LENGTH_SHORT).show()
+        if (updateEvent?.success == true){
+            goodsRecyclerView.adapter?.notifyDataSetChanged()
+        }
     }
 
     fun onAddFinishEvent() {
